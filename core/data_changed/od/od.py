@@ -4,7 +4,7 @@ from datetime import timedelta
 from shapely.geometry import Polygon
 
 from core.data_changed.od.od_model import OdModel
-from core.models.detection_box import DetectionBox
+from core.filters.detections import DetectionBox
 
 
 class Od:

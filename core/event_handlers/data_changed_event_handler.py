@@ -1,11 +1,13 @@
 import json
 from enum import IntEnum
-
 from redis.client import Redis
 
 from common.event_bus.event_handler import EventHandler
+from common.utilities import logger
 from core.data_changed.od.od_cache import OdCache
-from core.data_changed.source.source_cache import SourceCache
+from core.data_changed.prev_image_cache import PrevImageCache
+from core.data_changed.source_cache import SourceCache
+from core.event_handlers.channel_names import EventChannels
 
 
 class ModelChanged:
@@ -26,9 +28,10 @@ class DataChangedEvent:
 
 
 class DataChangedEventHandler(EventHandler):
-    def __init__(self, connection: Redis):
-        self.channel = 'data_changed'
+    def __init__(self, connection: Redis, prev_image_cache: PrevImageCache):
+        self.channel = EventChannels.data_changed
         self.encoding = 'utf-8'
+        self.prev_image_cache = prev_image_cache
         self.source_cache = SourceCache(connection)
         self.od_cache = OdCache(connection, self.source_cache)
 
@@ -49,15 +52,21 @@ class DataChangedEventHandler(EventHandler):
         if event.model_name == 'source':
             if event.op == ModelChangedOp.SAVE:
                 self.source_cache.refresh(mc.source_id)
+                logger.warning('Source Cache has been refreshed')
             elif event.op == ModelChangedOp.DELETE:
                 self.source_cache.remove(mc.source_id)
+                logger.warning('Source Cache has been removed')
             else:
                 raise NotImplementedError(event.op)
 
         elif event.model_name == 'od':
             if event.op == ModelChangedOp.SAVE:
                 self.od_cache.refresh(mc.source_id)
+                logger.warning('Od Cache has been refreshed')
             elif event.op == ModelChangedOp.DELETE:
                 self.od_cache.remove(mc.source_id)
+                logger.warning('Od Cache has been removed')
             else:
                 raise NotImplementedError(event.op)
+
+        self.prev_image_cache.set(mc.source_id, None)
