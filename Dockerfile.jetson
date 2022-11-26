@@ -1,0 +1,29 @@
+FROM ubuntu:22.04
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get -qq update -y
+RUN apt-get install -y apt-utils
+RUN apt-get install -y tzdata
+RUN apt-get install -y curl
+RUN apt-get install -y gcc python3-dev
+RUN apt-get -qq install --no-install-recommends -y python3-pip
+RUN apt-get install ffmpeg libsm6 libxext6 -y
+
+WORKDIR /app
+
+COPY . .
+
+RUN dpkg -i jetson_stuff/libgeos-3.6.2_3.6.2-1build2_arm64.deb
+RUN dpkg -i jetson_stuff/libgeos-c1v5_3.6.2-1build2_arm64.deb
+RUN dpkg -i jetson_stuff/libgeos-dev_3.6.2-1build2_arm64.deb
+
+RUN pip3 install ImageHash
+RUN pip3 install numpy
+RUN pip3 install Pillow
+RUN pip3 install redis
+RUN pip3 install shapely==1.8.2
+RUN pip3 install psutil
+RUN pip3 install opencv-python
+
+
+CMD ["python3", "main.py"]
