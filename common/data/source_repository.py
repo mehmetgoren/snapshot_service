@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from redis.client import Redis
 
 from common.data.base_repository import BaseRepository
@@ -11,7 +13,7 @@ class SourceRepository(BaseRepository):
     def _get_key(self, identifier: str) -> str:
         return f'{self.namespace}{identifier}'
 
-    def get(self, identifier: str) -> SourceModel:
+    def get(self, identifier: str) -> SourceModel | None:
         key = self._get_key(identifier)
         dic = self.connection.hgetall(key)
         if not dic:

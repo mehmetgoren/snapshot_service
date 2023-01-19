@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from redis.client import Redis
 
 from common.data.base_repository import BaseRepository
@@ -18,7 +20,7 @@ class OdRepository(BaseRepository):
         dic = self.to_redis(model)
         return self.connection.hset(key, mapping=dic)
 
-    def get(self, identifier: str) -> OdModel:
+    def get(self, identifier: str) -> OdModel | None:
         key = self._get_key(identifier)
         dic = self.connection.hgetall(key)
         if not dic:
