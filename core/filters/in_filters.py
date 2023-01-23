@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from common.utilities import logger
 from core.data_changed.od.od_cache import OdCache
 from core.data_changed.prev_image_cache import PrevImageCache

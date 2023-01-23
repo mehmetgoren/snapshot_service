@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from PIL import ImageDraw
 from typing import List
 import io
@@ -15,6 +17,7 @@ class OutFilters(Filter):
         super().__init__(od_cache)
         self.colors = self.__create_colors()
         self.colors_length = len(self.colors)
+        self.overlay = config.snapshot.overlay
 
     @staticmethod
     def __create_colors() -> List[str]:
@@ -83,7 +86,7 @@ class OutFilters(Filter):
                     logger.warning(f'mask filter is not ok for source({message.source_id})')
                     return None
 
-        if config.ai.overlay:
+        if self.overlay:
             self.__draw(message)
 
         return message
