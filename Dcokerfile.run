@@ -1,4 +1,4 @@
 gokalpgoren
     amd64:
-            docker build -t gokalpgoren/snapshot_service:v1.0.0-amd64 .
-            docker run -it --restart unless-stopped --name snapshot_service-instance --net host -e TZ=Europe/Istanbul gokalpgoren/snapshot_service:v1.0.0-amd64
+            docker build -t gokalpgoren/snapshot_service:v1.0.1-amd64 .
+            docker run -it --restart unless-stopped --name snapshot_service-instance --net host -e TZ=Europe/Istanbul gokalpgoren/snapshot_service:v1.0.1-amd64
